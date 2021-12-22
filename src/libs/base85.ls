@@ -30,12 +30,12 @@ export decode = ->
     diff = n - mod
     replaced-arr
     if mod == 0
-      replaced-arr = replaced.match /.{5}/g
+      replaced-arr = new RegExp ".{#{n}}",\g |> replaced.match
     else
       padd-replaced = replaced
       for i from 0 til diff
         padd-replaced = "#{padd-replaced}u"
-      replaced-arr = padd-replaced.match /.{5}/g
+      replaced-arr = new RegExp ".{#{n}}",\g |> padd-replaced.match
     ascii-arr = replaced-arr.map ->
       it.match /./g
         .map (i,n) -> ((i.charCodeAt 0) - 33) * 85 ** (4 - n)
