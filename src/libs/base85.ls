@@ -1,6 +1,6 @@
 export encode = ->
   bit = [...it].map ->
-    it |> Number |>-> it.toString 2 |> -> it.padStart 8,\0 
+    it |> Number |> -> it.toString 2 |> -> it.padStart 8,\0 
   .join ''
   n = 32
   mod = bit.length % n
