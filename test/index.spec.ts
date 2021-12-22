@@ -1,16 +1,47 @@
-import { sum } from '../src/index.ls';
+import * as main from '../src/index.ls';
 
 describe('index', (): void => {
-  describe('sum', (): void => {
-    test.each([
-      [1, 2, 3],
-      [100, 20, 120],
-      [10, 35, 45],
-      [-1, 2, 1],
-      [0, 10, 10],
-    ])('calculate %i + %i', (a: number, b: number, expected: number): void => {
-      const result: number = sum(a)(b);
-      expect(result).toBe(expected);
+  describe('N-gram', (): void => {
+    const str = '響け！ユーフォニアム';
+    const result: string[] = main.ngram(str);
+    test('Number of elements', (): void => {
+      expect(result.length).toBe(str.length);
+    });
+    test('String length for each element', (): void => {
+      result.map((i: string): void => expect(i.length).toBe(str.length + 1));
+    });
+    test('Type determination for each element', (): void => {
+      result.map((i: string): void =>
+        expect(typeof i === 'string').toBeTruthy()
+      );
+    });
+  });
+  describe('Base85', (): void => {
+    describe('Encode', (): void => {
+      test('Success', (): void => {
+        const str: Uint8Array = new TextEncoder().encode('Dream Theater');
+        const encode: string = main.base85.encode(str);
+        expect(encode).toBe("<~6uljID'2ekART[lEW?(>~>");
+      });
+    });
+    describe('Decode', (): void => {
+      test('Success', (): void => {
+        const str = '<~87cURD]i,"Ebo8=zz~>';
+        const decode: string = new TextDecoder()
+          .decode(main.base85.decode(str))
+          .replace(/\0.*$/g, '');
+        expect(decode).toBe('Hello World.');
+      });
+      test('Failed', (): void => {
+        try {
+          const str = '87cURD]i,"Ebo8=zz';
+          new TextDecoder()
+            .decode(main.base85.decode(str))
+            .replace(/\0.*$/g, '');
+        } catch (e) {
+          expect(e).toEqual(Error('base86: invalid input'));
+        }
+      });
     });
   });
 });
