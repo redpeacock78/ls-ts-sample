@@ -1,6 +1,6 @@
 export encode = ->
   bit = [...it].map ->
-    it |> Number |> -> it.toString 2 |> -> it.padStart 8,\0 
+    it |> Number |> -> it.toString 2 .padStart 8,\0 
   .join ''
   n = 32
   mod = bit.length % n
@@ -10,7 +10,7 @@ export encode = ->
       padding-bit = "#{padding-bit}00"
   base = new RegExp ".{#{n}}",\g |> padding-bit.match |> -> it.map ->
     con = 85
-    dec = it |> -> parseInt it,2
+    dec = parseInt it,2
     a = dec % con
     b = ((dec - a) / con) % con
     c = ((dec - (a + b * con)) / con ** 2) % con
@@ -19,12 +19,14 @@ export encode = ->
     [e, d, c, b, a]
   result = base.flat!.map ->
     it + 33 |> String.fromCharCode
-  .join '' |> -> it.replace /!!!!!/g,\z
+  .join '' .replace /!!!!!/g,\z
   "<~#{result}~>"
 
 export decode = ->
   if it.match /^<~/ || it.match /~>$/
-    replaced = it.replace /^<~/g,'' .replace /~>$/g,'' .replace /z/g,'!!!!!'
+    replaced = it.replace /^<~/g,''
+      |> -> it.replace /~>$/g,''
+      |> -> it.replace /z/g,\!!!!!
     n = 5
     mod = replaced.length % n
     diff = n - mod
