@@ -33,7 +33,6 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "coverageProvider": "v8",
     "transform": {
       "^.+\\.ls$": "livescript-jest",
       "^.+\\.(j|t)sx?": "ts-jest"
