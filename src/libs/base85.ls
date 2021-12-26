@@ -19,7 +19,9 @@ export encode = ->
     [e, d, c, b, a]
   result = base.flat!.map ->
     it + 33 |> String.fromCharCode
-  .join '' .replace /!!!!!/g,\z
+  .join ''
+  .replace /!!!!!/g,\z
+  .replace /z+$/,''
   "<~#{result}~>"
 
 export decode = ->
