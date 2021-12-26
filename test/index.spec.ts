@@ -26,7 +26,7 @@ describe('index', (): void => {
     });
     describe('Decode', (): void => {
       test('Success', (): void => {
-        const str = '<~87cURD]i,"Ebo8=zz~>';
+        const str = '<~87cURD]i,"Ebo8=~>';
         const decode: string = new TextDecoder()
           .decode(main.base85.decode(str))
           .replace(/\0.*$/g, '');
@@ -34,7 +34,7 @@ describe('index', (): void => {
       });
       test('Failed', (): void => {
         try {
-          const str = '87cURD]i,"Ebo8=zz';
+          const str = '87cURD]i,"Ebo8=';
           main.base85.decode(str);
         } catch (e) {
           expect(e).toEqual(Error('base86: invalid input'));
