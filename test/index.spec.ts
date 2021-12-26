@@ -27,9 +27,9 @@ describe('index', (): void => {
     describe('Decode', (): void => {
       test('Success', (): void => {
         const str = '<~87cURD]i,"Ebo8=~>';
-        const decode: string = new TextDecoder()
-          .decode(main.base85.decode(str))
-          .replace(/\0.*$/g, '');
+        const decode: string = new TextDecoder().decode(
+          main.base85.decode(str)
+        );
         expect(decode).toBe('Hello World.');
       });
       test('Failed', (): void => {
