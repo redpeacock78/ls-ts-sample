@@ -1,3 +1,5 @@
+import * as util from 'util';
+import * as now from 'jest-mock-now';
 import * as main from '../src/index.ls';
 
 describe('index', (): void => {
@@ -40,6 +42,37 @@ describe('index', (): void => {
           expect(e).toEqual(Error('base86: invalid input'));
         }
       });
+    });
+  });
+  describe('Snowflake', (): void => {
+    const snowflake = main.snowflake(512);
+    test('Ids are correctly sortable chronologically', (): void => {
+      const list: bigint[] = [...Array(999).keys()].map((): bigint =>
+        BigInt(snowflake.next().value)
+      );
+      expect(list).toEqual([...list].sort());
+    });
+    test('Ids can generate more than 4096 without failing and are still k-sortable', (): void => {
+      const list: bigint[] = [...Array(4999).keys()].map((): bigint =>
+        BigInt.asUintN(64, BigInt(snowflake.next().value) >> 22n)
+      );
+      util.inspect.defaultOptions.maxArrayLength = null;
+      expect(list).toEqual([...list].sort());
+    });
+    test('Ids are always unique', (): void => {
+      const list: string[] = [...Array(49999).keys()].map(
+        (): string => snowflake.next().value
+      );
+      expect(new Set(list).size === list.length).toBeTruthy();
+    });
+    test('Ids throw an error if they generate >4096 in 1 millisecond', (): void => {
+      now(new Date('2017-06-22'));
+      for (let i = 0; i < 4096; i++) {
+        snowflake.next().value;
+      }
+      expect(snowflake.next().value).toEqual(
+        Error('Failed to generate snowflake id.')
+      );
     });
   });
 });
